@@ -1,0 +1,20 @@
+.header-actions:has(.concept-theme-toggle) { gap: clamp(10px, 1.35vw, 20px); }
+
+.concept-theme-toggle {
+  display: grid;
+  flex: none;
+  width: 39px;
+  height: 39px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, currentColor 32%, transparent);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.concept-theme-toggle:hover { background: color-mix(in srgb, currentColor 13%, transparent); }
+.concept-theme-toggle span { font: 19px/1 system-ui, sans-serif; }
+.concept-theme-toggle span:last-child,
+.concept-theme-toggle[aria-pressed="true"] span:first-child { display: none; }
+.concept-theme-toggle[aria-pressed="true"] span:last-child { display: block; }

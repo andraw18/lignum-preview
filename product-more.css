@@ -1,0 +1,13 @@
+.product-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .85em;
+  min-height: 36px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: .78;
+}
+.product-more > span { font-size: 15px; line-height: 1; }
