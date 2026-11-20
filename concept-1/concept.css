@@ -161,6 +161,7 @@ body.intro-playing .hero-bottom { opacity: 0; }
 
 .work.featured { width: 86%; }
 .work.narrow { width: 70%; }
+#project-vishnevy-sad { margin-inline-end: calc(var(--portrait-inset) + clamp(14px, 3.8vw, 72px)); }
 .work.wide {
   width: 130%;
   margin-left: -30%;
