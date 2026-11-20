@@ -29,22 +29,29 @@ const directions = [
   ['Перегородки', 'partitions', 'Стеклянные перегородки в ЖК «Вишнёвый сад»', 'Стационарные и раздвижные перегородки, стеклянные ограждения. Профиль и стекло под задачу.', 'По фото проекта ЖК «Вишнёвый сад»']
 ];
 const tabs = [...document.querySelectorAll('[role="tab"]')];
-let activeDirection = 0;
+const directionTitle = document.querySelector('#product-title');
+const directionDescription = document.querySelector('#product-description');
+const directionCredit = document.querySelector('#product-credit');
+const directionPanel = document.querySelector('#product-panel');
+const swapDirectionPhoto = imageSwitcher(document.querySelector('.product-photo'), {
+  duration: 530,
+  keyframes: [{ opacity: 0, transform: 'scale(1.035)' }, { opacity: 1, transform: 'scale(1)' }],
+});
+
 function selectDirection(index) {
-  activeDirection = (index + directions.length) % directions.length;
-  const [title, id, alt, description, credit] = directions[activeDirection];
-  document.querySelector('#product-title').textContent = title;
-  document.querySelector('#product-description').textContent = description;
-  const image = document.querySelector('#product-image');
-  image.src = '/lignum-preview/assets/product-' + id + '.webp';
-  image.alt = alt;
-  document.querySelector('#product-credit').textContent = credit;
-  document.querySelector('#product-panel').setAttribute('aria-labelledby', tabs[activeDirection].id);
-  for (const [i, tab] of tabs.entries()) {
-    tab.setAttribute('aria-selected', String(i === activeDirection));
-    tab.tabIndex = i === activeDirection ? 0 : -1;
-  }
-  if (!reducedMotion.matches) image.animate([{opacity: .2, transform: 'scale(1.045)'}, {opacity: 1, transform: 'scale(1)'}], {duration: 650, easing: 'ease-out'});
+  const selected = (index + directions.length) % directions.length;
+  const [title, id, alt, description, credit] = directions[selected];
+  swapDirectionPhoto('/lignum-preview/assets/product-' + id + '.webp', alt, undefined, () => {
+    directionTitle.textContent = title;
+    directionDescription.textContent = description;
+    directionCredit.textContent = credit;
+    directionPanel.setAttribute('aria-labelledby', tabs[selected].id);
+    for (const [i, tab] of tabs.entries()) {
+      tab.setAttribute('aria-selected', String(i === selected));
+      tab.tabIndex = i === selected ? 0 : -1;
+    }
+  });
+  return selected;
 }
 document.querySelector('.product-tabs').hidden = false;
 document.addEventListener('click', event => {
@@ -57,8 +64,7 @@ for (const [index, tab] of tabs.entries()) {
     const keys = {ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: tabs.length - 1};
     if (!(event.key in keys)) return;
     event.preventDefault();
-    selectDirection(keys[event.key]);
-    tabs[activeDirection].focus();
+    tabs[selectDirection(keys[event.key])].focus();
   });
 }
 

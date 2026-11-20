@@ -557,13 +557,16 @@ body.intro-playing .hero-bottom { opacity: 0; }
 .product-heading .product-more { margin-top: 14px; }
 
 .product-photo {
+  position: relative;
   grid-area: 1 / 1;
   width: min(44%, 430px, max(200px, calc((100svh - 224px) * .8)));
   aspect-ratio: 4 / 5;
-  background: #25211e;
+  overflow: hidden;
 }
 
 .product-photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
