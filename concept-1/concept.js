@@ -124,25 +124,31 @@ if ('IntersectionObserver' in window) {
 async function playIntro() {
   let seen = false;
   try { seen = sessionStorage.getItem('lignum-concept-2-intro') === 'seen'; } catch {}
-  if (seen || reducedMotion.matches || location.hash || scrollY > 30) {document.documentElement.classList.remove('intro-first'); return;}
-  document.body.classList.add('intro-playing');
-  photo.style.clipPath = 'inset(37% 39%)';
+  const canPlay = () => !reducedMotion.matches && !location.hash && scrollY <= 30;
+  if (seen || !canPlay() || !picture.decode || !photo.animate) return;
+
+  const ready = await Promise.race([
+    picture.decode().then(() => true, () => false),
+    new Promise(resolve => setTimeout(resolve, 550, false))
+  ]);
+  if (!ready || !canPlay()) return;
+
+  let animation;
   try {
-    await Promise.race([picture.decode().catch(() => {}), new Promise(resolve => setTimeout(resolve, 1500))]);
-    if (reducedMotion.matches) return;
-    await photo.animate([
+    animation = photo.animate([
       {clipPath: 'inset(37% 39%)', opacity: 0},
       {clipPath: 'inset(37% 39%)', opacity: 1, offset: .24},
       {clipPath: 'inset(0% 0%)', opacity: 1}
-    ], {duration: 2400, easing: 'cubic-bezier(.65,0,.2,1)'}).finished;
+    ], {duration: 2400, easing: 'cubic-bezier(.65,0,.2,1)'});
+    document.body.classList.add('intro-playing');
+    await Promise.race([animation.finished, new Promise(resolve => setTimeout(resolve, 2700))]);
   } finally {
-    photo.style.removeProperty('clip-path');
+    animation?.cancel();
     document.body.classList.remove('intro-playing');
-    document.documentElement.classList.remove('intro-first');
     try {sessionStorage.setItem('lignum-concept-2-intro', 'seen');} catch {}
   }
 }
-playIntro().finally(syncHeroSlides);
+playIntro().catch(() => {}).finally(syncHeroSlides);
 
 const tour = document.querySelector('.showroom-tour');
 const tourFrames = [...tour.querySelectorAll('.tour-frame')];
